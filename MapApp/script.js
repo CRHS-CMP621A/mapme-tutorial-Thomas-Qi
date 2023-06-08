@@ -59,7 +59,7 @@ class Cycling extends Workout{
     }
 
     calcSpeed(){
-        this.speed = this.duration / this.distance;
+        this.speed = this.distance / (this.duration / 60);
         this.speed = this.pace.toFixed(1);
         return this.speed
     }
@@ -95,7 +95,7 @@ navigator.geolocation.getCurrentPosition(
             form.classList.remove('hidden');
             inputDistance.focus();
             
-       })
+       });
        
        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
           attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -110,9 +110,6 @@ navigator.geolocation.getCurrentPosition(
        }
 
     }, 
-    function (){
-        alert("Could not get the position.");
-    },
 );
 
 form.addEventListener('submit', function(e){
@@ -183,17 +180,20 @@ form.addEventListener('submit', function(e){
                  </div>
                </li>`
                
-               L.marker([lat, lng]).addTo(map)
-               .bindPopup(L.popup({
-                  maxWidth:250,
-                  minWidth:100,
-                  autoClose:false,
-                  closeOnClick:false,
-                  className:'running-popup',
-               }))
-               .setPopupContent('Workout')
-               .openPopup();
-               form.reset()
+        L.marker([lat, lng])
+        .addTo(map)
+            .bindPopup(
+                L.popup({
+                    maxWidth:250,
+                    minWidth:100,
+                    autoClose:false,
+                    closeOnClick:false,
+                    className:'running-popup',
+                    })
+               )
+        .setPopupContent('Workout')
+        .openPopup();
+        form.reset();
     }else if (workout.type === `cycling`){
         html += `<li class="workout workout--cycling" data-id=${workouts.id}>
                     <h2 class="workout__title">${workouts.description}</h2>
@@ -219,20 +219,25 @@ form.addEventListener('submit', function(e){
                     </div>
                   </li>`
 
-                L.marker([lat, lng]).addTo(map)
-               .bindPopup(L.popup({
-                  maxWidth:250,
-                  minWidth:100,
-                  autoClose:false,
-                  closeOnClick:false,
-                  className:'running-popup',
-               }))
-               .setPopupContent('Workout')
-               .openPopup();
-     
+        L.marker([lat, lng])
+        .addTo(map)
+            .bindPopup(
+                L.popup({
+                   maxWidth:250,
+                   minWidth:100,
+                   autoClose:false,
+                   closeOnClick:false,
+                   className:'running-popup',
+               })
+            )
+        .setPopupContent('Workout')
+        .openPopup();
+        form.reset();
     }
     form.insertAdjacentHTML("aftered", html);
 
+    
+    
     form.reset()
     form.classList.add("hidden");
 
@@ -249,7 +254,7 @@ containerWorkouts.addEventListener("click", function(e){
     
     if (!workoutE1) return;
     
-    const workout = workouts.find(work)
+    const workout = workouts.find((work) => work.id === workoutE1.dataset.id);
 
     map.setView(workout.coords, 13,{
         //set the Map view to the location of the workout coordinates
